@@ -23,7 +23,6 @@
 */
 
 namespace pocketmine;
-
 use pocketmine\block\Block;
 use pocketmine\command\CommandReader;
 use pocketmine\command\CommandSender;
@@ -48,8 +47,8 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentLevelTable;
 use pocketmine\item\Item;
 use pocketmine\lang\BaseLang;
-use pocketmine\level\format\io\LevelProviderManager;
 use pocketmine\level\format\io\leveldb\LevelDB;
+use pocketmine\level\format\io\LevelProviderManager;
 use pocketmine\level\format\io\region\Anvil;
 use pocketmine\level\format\io\region\McRegion;
 use pocketmine\level\format\io\region\PMAnvil;
@@ -77,19 +76,19 @@ use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\CompressBatchedTask;
-use pocketmine\network\Network;
 use pocketmine\network\mcpe\protocol\BatchPacket;
 use pocketmine\network\mcpe\protocol\DataPacket;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\PlayerListPacket;
-use pocketmine\network\query\QueryHandler;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\RakLibInterface;
+use pocketmine\network\Network;
+use pocketmine\network\query\QueryHandler;
 use pocketmine\network\rcon\RCON;
 use pocketmine\network\upnp\UPnP;
 use pocketmine\permission\BanList;
 use pocketmine\permission\DefaultPermissions;
-use pocketmine\plugin\PharPluginLoader;
 use pocketmine\plugin\FolderPluginLoader;
+use pocketmine\plugin\PharPluginLoader;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginLoadOrder;
 use pocketmine\plugin\PluginManager;
@@ -111,6 +110,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
+use pocketmine\entitymanager\EntityManager;
 
 /**
  * The class that manages everything
@@ -269,9 +269,8 @@ class Server{
 
 	/** @var Level */
 	private $levelDefault = null;
-
+	
 	//private $aboutContent = "";
-
 	/** Advanced Config */
 	public $advancedConfig = null;
 
@@ -316,6 +315,8 @@ class Server{
 	public $enderName = "ender";
 	public $enderLevel = null;
 	public $absorbWater = false;
+	public $mobAIenabled = true;
+	public $mobAutoSpawnEnabled = true;
 
 	/**
 	 * @return string
@@ -1598,7 +1599,8 @@ class Server{
 		$this->allowInventoryCheats = $this->getAdvancedProperty("inventory.allow-cheats", false);
 		$this->folderpluginloader = $this->getAdvancedProperty("developer.folder-plugin-loader", true);
 		$this->absorbWater = $this->getAdvancedProperty("server.absorb-water", false);
-
+		$this->mobAIenabled = $this->getAdvancedProperty("entities.mob-ai", true);
+		$this->mobAutoSpawnEnabled = $this->getAdvancedProperty("entities.auto-spawn", false);
 	}
 
 	/**
@@ -1895,8 +1897,15 @@ class Server{
 
 			$this->network->registerInterface(new RakLibInterface($this));
 
-			$this->pluginManager->loadPlugins($this->pluginPath);
-
+			$this->pluginManager->loadPlugins($this->getPluginPath());
+			
+			//mob ai
+			if($this->mobAIenabled) {
+				if(!$this->pluginManager->loadPlugin($this->dataPath . 'src/pocketmine/entitymanager')) {
+					$this->pluginManager->loadPlugin(\Phar::running() . '/src/pocketmine/entitymanager');
+				}
+			}
+			
 			$this->enablePlugins(PluginLoadOrder::STARTUP);
 
 			LevelProviderManager::addProvider(Anvil::class);
