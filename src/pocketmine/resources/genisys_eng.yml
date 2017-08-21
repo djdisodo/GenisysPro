@@ -14,7 +14,7 @@
 
 #Version of this file
 config:
- version: 28
+ version: 29
 
 level:
  #Set if weather is enabled (rain may cause lag to older devices)
@@ -134,3 +134,6 @@ dserver:
 inventory:
  #Set this to true if you have problems with anvils. This will process inventory transactions in a vanilla fashion with no anti-cheats or verification.
  allow-cheats: false
+entities:
+ mob-ai: true
+ auto-spawn: false

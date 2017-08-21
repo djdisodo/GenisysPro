@@ -14,7 +14,7 @@
 
 #配置檔案版本
 config:
- version: 28
+ version: 29
  
 level:
  #設定是否變換天氣
@@ -141,3 +141,6 @@ dserver:
 inventory:
  #如果無法使用鐵砧或附魔台請啟用本項. 將會對背包進行驗證.
  allow-cheats: false
+entities:
+ mob-ai: true
+ auto-spawn: false

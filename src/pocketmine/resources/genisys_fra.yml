@@ -13,7 +13,7 @@
 
 #Version de ce fichier
 config:
- version: 28
+ version: 29
 
 level:
  #Réglez si la météo est activée (la pluie peut provoquer un retard sur les périphériques plus anciens)
@@ -133,3 +133,6 @@ dserver:
  inventory:
   #Configurez ceci comme vrai si vous avez des problèmes avec les enclumes. Cela permettra de traiter les transactions d'inventaire de manière vanille sans anti-triche ou de vérification.
   allow-cheats: false
+entities:
+ mob-ai: true
+ auto-spawn: false

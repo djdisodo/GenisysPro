@@ -14,7 +14,7 @@
 
 #ファイルのバージョン
 config:
- version: 28
+ version: 29
 
 level:
  #有効にすると、天候要素が加わります（雨が降ると古い端末の動作が遅くなる場合があります）
@@ -136,3 +136,6 @@ dserver:
 inventory:
  #金床に問題がある場合は無効にするとチートの検証をせずにインベントリを処理します
  allow-cheats: false
+entities:
+ mob-ai: true
+ auto-spawn: false
